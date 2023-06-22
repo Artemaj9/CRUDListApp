@@ -10,6 +10,7 @@ import SwiftUI
 struct NoItemsView: View {
     
     @State var animate: Bool  = false
+    let secondaryAccentColor = Color("SeconadaryAccentColor")
     
     var body: some View {
         ScrollView{
@@ -18,18 +19,28 @@ struct NoItemsView: View {
                     .font(.title)
                     .fontWeight(.semibold)
                 Text("Are you pruductive person? I yhink you should click the add button and add a bunch of items to your todo list!")
-                    .padding(.bottom,20)
+                    .padding(.bottom,30)
                 NavigationLink(destination: AddView()) {
                     Text("Add Something! 🥳")
                         .foregroundColor(.white)
                         .font(.headline)
                         .frame(height: 55)
                         .frame(maxWidth: .infinity)
-                        .background(Color.mint)
+                        .background(animate ? Color.purple : Color.pink)
+                       // .background(Color.mint)
                         .cornerRadius(10)
                         .shadow(radius: 5)
                 }
+                .padding(.horizontal, animate ? 30 : 50)
+                .shadow(
+                    color: animate ? Color.purple.opacity(0.3) : Color.pink.opacity(0.3),
+                    radius: animate ? 30 : 10,
+                    x: 0.0,
+                    y: animate ? 50 : 30)
+                .scaleEffect(animate ? 1.1 : 1.0)
+                .offset(y: animate ? -7 : 0)
             }
+            .frame(maxWidth: 400)
             .multilineTextAlignment(.center)
             .padding(40)
             .onAppear (perform: addAnimation)
@@ -38,8 +49,12 @@ struct NoItemsView: View {
         }
         
         func addAnimation() {
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { withAnimation(.easeInOut) {
+            guard !animate else {return}
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { withAnimation(
+            Animation
+                .easeInOut(duration: 2.0)
+                .repeatForever()
+            ) {
                 animate.toggle()
             }
             }
